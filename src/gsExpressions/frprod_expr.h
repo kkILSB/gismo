@@ -14,6 +14,8 @@
 
 #pragma once
 
+#include <type_traits>
+
 namespace gismo
 {
 namespace expr
@@ -101,7 +103,7 @@ public:
 
 /**
  * @brief Expression for the Frobenius product of two expressions (second version)
- *        When left hand only side is block-wise
+ *        When only left-hand side is block-wise
  *        [A1 A2 A3] : B = [A1:B  A2:B  A3:B]
  * @ingroup Expressions
  * @tparam E1 The first expression type
@@ -166,9 +168,19 @@ public:
  * @param v The second expression
  * @ingroup Expressions
  */
-template <typename E1, typename E2> EIGEN_STRONG_INLINE
-frprod_expr<E1,E2> const  operator%(_expr<E1> const& u, _expr<E2> const& v)
+template <typename E1, typename E2, bool lhs_has_col_blocks = E1::ColBlocks> EIGEN_STRONG_INLINE
+std::enable_if_t<lhs_has_col_blocks, frprod_expr<E1,E2>> const operator%(_expr<E1> const& u, _expr<E2> const& v)
 { return frprod_expr<E1, E2>(u, v); }
+
+/**
+ * @brief Returns the Frobenius product of two expressions
+ * @param u The first expression
+ * @param v The second expression
+ * @ingroup Expressions
+ */
+template <typename E1, typename E2, bool lhs_has_col_blocks = E1::ColBlocks> EIGEN_STRONG_INLINE
+std::enable_if_t<!lhs_has_col_blocks, frprod_expr<E2,E1>> const operator%(_expr<E1> const& u, _expr<E2> const& v)
+{ return frprod_expr<E2, E1>(v, u); }
 
 }// namespace expr
 }// namespace gismo
