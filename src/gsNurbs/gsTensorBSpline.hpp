@@ -14,6 +14,7 @@
 
 #pragma once
 
+#include <gsCore/gsConfig.h>
 #include <gsCore/gsConstantFunction.h>
 
 #include <gsNurbs/gsBSpline.h>
@@ -311,7 +312,7 @@ void gsTensorBSpline<d,T>::degreeElevate(short_t const i, short_t const dir)
 }
 
 template<short_t d, class T>
-void gsTensorBSpline<d,T>::insertKnot( T knot, int dir, int i)
+void gsTensorBSpline<d,T>::insertKnot( T knot, index_t dir, index_t i)
 {
     GISMO_ASSERT( i>0, "multiplicity must be at least 1");
 
